@@ -8,6 +8,7 @@ const loginRouter = require('./controllers/login')
 const middleware = require('./utils/middleware')
 const app = express()
 const cors = require('cors')
+const path = require('path')
 
 app.use(cors({ origin: 'http://localhost:8080' }))
 const mongoUrl = process.env.NODE_ENV === 'test'
@@ -20,6 +21,8 @@ mongoose.connect(mongoUrl)
 app.use(express.json())
 app.use(middleware.requestLogger)
 app.use(middleware.tokenExtractor)
+
+app.use(express.static(path.join(__dirname, '../dist')))
 
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
