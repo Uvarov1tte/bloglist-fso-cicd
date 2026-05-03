@@ -11,7 +11,8 @@
     "test:server": "cross-env  NODE_ENV=test node --test",
     "test:client": "jest",
     "test:e2e": "npx playwright test",
-    "eslint": "npx eslint . --fix",
+    "eslint": "npx eslint .",
+    "eslint:fix": "npx eslint . --fix",
     "build": "webpack --mode production"
   },
   "jest": {
