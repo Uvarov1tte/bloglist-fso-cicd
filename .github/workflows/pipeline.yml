@@ -52,3 +52,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+  discord_notify:
+    needs: [build_and_test]
+    runs-on: ubuntu-latest
+    if: ${{ always() && github.event_name == 'push' }}
+    steps:
+      - uses: sarisia/actions-status-discord@v1
+        if: ${{ needs.build_and_test.result == 'failed' }}
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          title: Deployment failed
+          description: New version failed to deploy
+      - uses: sarisia/actions-status-discord@v1
+        if: ${{ needs.build_and_test.result == 'success'}}
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          nodetail: true
+          title: Successfully deployed a new version
+          description: |
+            Commit: ${{ github.event.head_commit.id }}
+            Author: ${{ github.event.head_commit.author.name }}
+            Message: ${{ github.event.head_commit.message }}
